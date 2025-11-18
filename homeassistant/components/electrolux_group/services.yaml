@@ -1,0 +1,10 @@
+.getInteractiveMaps:
+  target:
+    entity:
+      integration: electrolux_group
+      domain: vacuum
+.getMemoryMaps:
+  target:
+    entity:
+      integration: electrolux_group
+      domain: vacuum
