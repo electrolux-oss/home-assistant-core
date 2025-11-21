@@ -180,7 +180,7 @@ class ElectroluxConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ) -> config_entries.ConfigFlowResult:
         """Ask user to confirm adding the discovered appliance."""
         if user_input is not None:
-            data = cast(ElectroluxData, self.hass.data.get(self._entry.entry_id))
+            data = cast(ElectroluxData, self._entry.runtime_data)
 
             client = data.client
 

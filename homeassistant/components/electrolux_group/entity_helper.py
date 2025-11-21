@@ -19,7 +19,7 @@ async def async_setup_entities_helper(
 ):
     """Provide async_setup_entry helper."""
 
-    data = cast(ElectroluxData, hass.data[entry.entry_id])
+    data = cast(ElectroluxData, entry.runtime_data)
     client: ElectroluxApiClient = data.client
     appliances = await client.fetch_appliance_data()
     entities = []

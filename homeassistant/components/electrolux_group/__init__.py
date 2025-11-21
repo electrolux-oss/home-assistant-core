@@ -79,7 +79,7 @@ async def _get_vacuum_maps(
 
     # Find the right coordinator
     for entry in hass.config_entries.async_entries(DOMAIN):
-        runtime_data = hass.data.get(entry.entry_id)
+        runtime_data = entry.runtime_data
         if not runtime_data:
             continue
 
@@ -138,12 +138,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             },
         )
 
-    if hass.data.get(DOMAIN) is None:
-        hass.data.setdefault(DOMAIN, {})
-
-    if hass.data[DOMAIN].get(entry.entry_id) is None:
-        hass.data[DOMAIN][entry.entry_id] = {}
-
     try:
         token_manager = ElectroluxTokenManager(hass, entry, save_tokens)
         appliance_client = ApplianceClient(
@@ -153,7 +147,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         raise ConfigEntryAuthFailed("Failed to setup API client") from exception
 
     client = ElectroluxApiClient(appliance_client)
-    hass.data[DOMAIN][entry.entry_id]["client"] = client
 
     # Check during integration initialization if we are able to set it up correctly
     try:
@@ -196,13 +189,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "electrolux event listener",
     )
 
-    hass.data.setdefault(
-        entry.entry_id,
-        ElectroluxData(
-            client=client,
-            coordinators=coordinators,
-            sse_task=sse_task,
-        ),
+    entry.runtime_data = ElectroluxData(
+        client=client,
+        coordinators=coordinators,
+        sse_task=sse_task,
     )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -213,14 +203,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     # Remove SSE listeners
-    runtime_data = hass.data.get(entry.entry_id)
+    runtime_data = entry.runtime_data
     if runtime_data:
         coordinators = runtime_data.coordinators
         for coordinator in coordinators.values():
             coordinator.remove_listeners()
 
         # Cancel SSE task
-        data = cast(ElectroluxData, hass.data.get(entry.entry_id))
+        data = cast(ElectroluxData, entry.runtime_data)
         sse_task = data.sse_task
         if sse_task:
             sse_task.cancel()
@@ -230,7 +220,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 _LOGGER.info("SSE stream cancelled for entry %s", entry.entry_id)
 
     await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    hass.data[DOMAIN].pop(entry.entry_id, None)
     return True
 
 
@@ -257,7 +246,7 @@ async def _check_for_new_devices(
     _LOGGER.info("Checking for new devices")
     device_registry = dr.async_get(hass)
 
-    data = cast(ElectroluxData, hass.data.get(entry.entry_id))
+    data = cast(ElectroluxData, entry.runtime_data)
     coordinators = data.coordinators
     appliances = await client.fetch_appliance_data()
 
