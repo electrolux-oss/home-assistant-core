@@ -186,6 +186,35 @@
         "name": "Upper cavity target temperature"
       }
     },
+    "select": {
+      "bottomoven_program": {
+        "name": "Lower cavity program"
+      },
+      "fan_level": {
+        "name": "Fan level"
+      },
+      "hood_fan_speed": {
+        "name": "Hood fan speed"
+      },
+      "hood_state": {
+        "name": "Hood state"
+      },
+      "program": {
+        "name": "Program"
+      },
+      "sound_tone": {
+        "name": "Sound tone"
+      },
+      "spin_speed": {
+        "name": "Spin speed"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "upperoven_program": {
+        "name": "Upper cavity program"
+      }
+    },
     "sensor": {
       "appliance_state": {
         "name": "Appliance state",
