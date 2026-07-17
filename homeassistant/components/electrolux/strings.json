@@ -186,6 +186,121 @@
         "name": "Upper cavity target temperature"
       }
     },
+    "select": {
+      "bottomoven_oven_program": {
+        "name": "Lower cavity program"
+      },
+      "fan_level": {
+        "name": "Fan level"
+      },
+      "hood_fan_speed": {
+        "name": "Hood fan speed"
+      },
+      "hood_state": {
+        "name": "Hood state"
+      },
+      "oven_program": {
+        "name": "Program",
+        "state": {
+          "air_fry": "AirFry",
+          "air_sous_vide": "Air SousVide",
+          "augratin": "Au gratin",
+          "bake": "Bake",
+          "bottom": "Bottom heat",
+          "bread_baking": "Bread baking",
+          "broil": "Broil",
+          "calzone": "Calzones",
+          "catalytic_cleaning": "Catalytic cleaning",
+          "cheese_bread": "Cheese bread",
+          "chips": "Hamburgers",
+          "conventional_bake": "Convect bake",
+          "conventional_cooking": "Conventional cooking",
+          "conventional_roast": "Convect roast",
+          "defrost": "Defrost",
+          "dehydrate": "Dehydrating",
+          "descaling": "Descaling",
+          "dough_proofing": "Dough proofing",
+          "drying": "Drying",
+          "frozen_foods": "Frozen foods",
+          "frozen_french_fries": "Frozen french fries",
+          "full_steam": "Full steam",
+          "grill": "Grill",
+          "hot_air_bottom": "Hot air, bottom",
+          "hot_air_bottom_steam": "Hot air, bottom and steam",
+          "hot_air_broil": "Hot air and top",
+          "hot_air_top_bottom": "Hot air, top and bottom",
+          "keep_warm": "Keep warm",
+          "manual": "Manual/Others",
+          "matzah": "Matzah",
+          "meat_and_fish": "Meat and fish",
+          "microwave": "Microwave",
+          "microwave_conventional_cooking": "Conventional cooking + Microwave",
+          "microwave_grill": "Grill + Microwave",
+          "microwave_true_fan": "True Fan + Microwave",
+          "microwave_turbo_grill": "Turbo Grilling + Microwave",
+          "moist_fan_bake": "Moist fan baking",
+          "multi_rack": "Multi-rack",
+          "naan": "Naan",
+          "no_preheat": "No preheat",
+          "nuggets_and_chicken_wings": "Nuggets and chicken wings",
+          "pasta": "Pasta",
+          "pasta_and_pizza": "Pasta and pizza",
+          "pies": "Pies",
+          "pita_bread": "Pita bread",
+          "pizza": "Pizza",
+          "pizza_cauliflower": "Cauliflower crust",
+          "pizza_frozen": "Frozen pizza",
+          "pizza_glutenfree": "Gluten-free crust",
+          "pizza_stone_baked": "Stone-baked pizza",
+          "pizza_warm_up": "Pre-baked pizza",
+          "plate_warming": "Plate warming",
+          "precision_steam": "Precision steam",
+          "preserving": "Preserve",
+          "pro_steam": "Pro steam",
+          "pyro_clean_intense": "Pyrolytic cleaning intense",
+          "pyro_clean_light": "Pyrolytic cleaning quick",
+          "pyro_clean_normal": "Pyrolytic cleaning normal",
+          "rinsing": "Rinsing",
+          "rustic_potatoes": "Rustic potatoes",
+          "self_clean": "Self-clean",
+          "slow_cooking": "Slow cooking",
+          "sous_vide": "SousVide",
+          "steam_bake": "Steam bake",
+          "steam_clean": "Steam cleaning",
+          "steam_clean_plus": "Steam cleaning plus",
+          "steam_high": "High steam",
+          "steam_low": "Low steam",
+          "steam_meat": "Steam meat",
+          "steam_medium": "Medium steam",
+          "steam_regenerating": "Steam regenerating",
+          "steam_roast": "Steam roast",
+          "steamify": "Steamify",
+          "tank_empty": "Tank emptying",
+          "top_bottom": "Top and bottom",
+          "true_fan": "True fan cooking",
+          "turbo_grill": "Turbo grilling",
+          "turkey": "Turkey",
+          "vegetables": "Vegetables",
+          "water_bath": "Water bath",
+          "yoghurt": "Yogurt"
+        }
+      },
+      "program": {
+        "name": "Program"
+      },
+      "sound_tone": {
+        "name": "Sound tone"
+      },
+      "spin_speed": {
+        "name": "Spin speed"
+      },
+      "temperature": {
+        "name": "Temperature"
+      },
+      "upperoven_oven_program": {
+        "name": "Upper cavity program"
+      }
+    },
     "sensor": {
       "appliance_state": {
         "name": "Appliance state",
