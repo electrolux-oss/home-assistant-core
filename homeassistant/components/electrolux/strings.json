@@ -236,12 +236,22 @@
       "cycle_phase": {
         "name": "Cycle phase",
         "state": {
-          "active": "Active",
-          "cooling_down": "Cooling down",
-          "heating_up": "Heating up",
+          "ado_drying": "Dry",
+          "anticrease": "Anti-crease",
+          "coldrinse": "Rinse",
+          "cool": "Cooling down",
+          "drain": "Drain",
+          "dry": "Dry",
+          "drying": "Dry",
+          "extrarinse": "Rinse",
+          "hotrinse": "Rinse",
+          "mainwash": "Wash",
           "prewash": "Prewash",
-          "rinsing": "Rinsing",
-          "washing": "Washing"
+          "rinse": "Rinse",
+          "spin": "Spin",
+          "steam": "Steam",
+          "unavailable": "Unavailable",
+          "wash": "Wash"
         }
       },
       "display_temperature": {
@@ -394,8 +404,14 @@
           "temporary_locked": "Temporarily locked"
         }
       },
+      "running_time": {
+        "name": "Running time"
+      },
       "sound_volume": {
         "name": "Sound volume"
+      },
+      "start_at": {
+        "name": "Start time"
       },
       "tvoc": {
         "name": "TVOC"

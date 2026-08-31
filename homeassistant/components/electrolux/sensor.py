@@ -3,10 +3,14 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime
 import logging
 from typing import TYPE_CHECKING, override
 
-from electrolux_group_developer_sdk.appliance_config.cr_config import EXTRA_CAVITY
+from electrolux_group_developer_sdk.appliance_config.cr_config import (
+    EXTRA_CAVITY,
+    STOP_TIME,
+)
 from electrolux_group_developer_sdk.client.appliances.ap_appliance import APAppliance
 from electrolux_group_developer_sdk.client.appliances.appliance_data import (
     ApplianceData,
@@ -40,13 +44,16 @@ from electrolux_group_developer_sdk.feature_constants import (
     PM_2_5,
     PM_10,
     REMOTE_CONTROL,
+    RUNNING_TIME,
     SOUND_VOLUME,
+    START_TIME,
     TANK_A_DET_LOAD_FOR_NOMINAL_WEIGHT_CAPABILITY,
     TANK_A_RESERVE_CAPABILITY,
     TANK_B_DET_LOAD_FOR_NOMINAL_WEIGHT_CAPABILITY,
     TANK_B_RESERVE_CAPABILITY,
     TARGET_TEMPERATURE_C,
     TARGET_TEMPERATURE_F,
+    TIME_TO_END,
     TVOC,
     WATER_FILTER_STATE,
     WATER_HARDNESS,
@@ -61,7 +68,12 @@ from homeassistant.components.sensor import (
     SensorStateClass,
     StateType,
 )
-from homeassistant.const import UnitOfDensity, UnitOfRatio, UnitOfTemperature
+from homeassistant.const import (
+    UnitOfDensity,
+    UnitOfRatio,
+    UnitOfTemperature,
+    UnitOfTime,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.util.unit_conversion import TemperatureConverter
@@ -102,7 +114,7 @@ class ElectroluxSensorDescription[T: ApplianceData](SensorEntityDescription):
     """Custom sensor description for Electrolux sensors."""
 
     exists_fn: Callable[[T], bool] = lambda appliance: True
-    value_fn: Callable[[T], StateType]
+    value_fn: Callable[[T], StateType | datetime]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -178,6 +190,22 @@ OVEN_ELECTROLUX_SENSORS: tuple[ElectroluxSensorDescription[OVAppliance], ...] = 
         value_fn=lambda appliance: appliance.get_current_remote_control(),
         feature_name=REMOTE_CONTROL,
         known_values=REMOTE_CONTROL_KNOWN_VALUES,
+    ),
+    ElectroluxSensorDescription(
+        key="start_at",
+        translation_key="start_at",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        exists_fn=lambda appliance: appliance.is_feature_supported(START_TIME),
+        value_fn=lambda appliance: appliance.get_current_start_at(),
+    ),
+    ElectroluxSensorDescription(
+        key="running_time",
+        translation_key="running_time",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
+        suggested_unit_of_measurement=UnitOfTime.HOURS,
+        exists_fn=lambda appliance: appliance.is_feature_supported(RUNNING_TIME),
+        value_fn=lambda appliance: appliance.get_current_running_time(),
     ),
 )
 
@@ -306,12 +334,22 @@ CARE_ELECTROLUX_SENSORS: tuple[
         value_fn=lambda appliance: appliance.get_current_cycle_phase(),
         feature_name=CYCLE_PHASE,
         known_values={
-            "active",
-            "cooling_down",
-            "heating_up",
+            "ado_drying",
+            "anticrease",
+            "coldrinse",
+            "cool",
+            "drain",
+            "dry",
+            "drying",
+            "extrarinse",
+            "hotrinse",
+            "mainwash",
             "prewash",
-            "rinsing",
-            "washing",
+            "rinse",
+            "spin",
+            "steam",
+            "unavailable",
+            "wash",
         },
     ),
     ElectroluxEnumSensorDescription(
@@ -329,6 +367,33 @@ CARE_ELECTROLUX_SENSORS: tuple[
         value_fn=lambda appliance: appliance.get_current_water_hardness(),
         feature_name=WATER_HARDNESS,
         known_values={"soft", "medium", "hard"},
+    ),
+    ElectroluxSensorDescription[DWAppliance | TDAppliance | WDAppliance | WMAppliance](
+        key="start_at",
+        translation_key="start_at",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        exists_fn=lambda appliance: appliance.is_feature_supported(
+            [START_TIME, STOP_TIME]
+        ),
+        value_fn=lambda appliance: appliance.get_current_start_at(),
+    ),
+    ElectroluxSensorDescription[DWAppliance | TDAppliance | WDAppliance | WMAppliance](
+        key="end_at",
+        translation_key="end_at",
+        device_class=SensorDeviceClass.TIMESTAMP,
+        exists_fn=lambda appliance: appliance.is_feature_supported(
+            [START_TIME, STOP_TIME]
+        ),
+        value_fn=lambda appliance: appliance.get_current_end_at(),
+    ),
+    ElectroluxSensorDescription[DWAppliance | TDAppliance | WDAppliance | WMAppliance](
+        key="running_time",
+        translation_key="running_time",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
+        suggested_unit_of_measurement=UnitOfTime.HOURS,
+        exists_fn=lambda appliance: appliance.is_feature_supported(TIME_TO_END),
+        value_fn=lambda appliance: appliance.get_current_time_to_end(),
     ),
 )
 
@@ -775,7 +840,7 @@ class ElectroluxBaseSensor[T: ApplianceData](
         return False
 
     @abstractmethod
-    def _get_value(self) -> StateType:
+    def _get_value(self) -> StateType | datetime:
         raise NotImplementedError
 
 
@@ -809,7 +874,7 @@ class ElectroluxSensor[T: ApplianceData](ElectroluxBaseSensor[T]):
                 self._attr_options = snake_case_options
 
     @override
-    def _get_value(self) -> StateType:
+    def _get_value(self) -> StateType | datetime:
         value = self.entity_description.value_fn(self._appliance_data)
 
         if isinstance(value, str) and isinstance(

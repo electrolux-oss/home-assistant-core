@@ -79,8 +79,14 @@
       "remote_control": {
         "default": "mdi:remote"
       },
+      "running_time": {
+        "default": "mdi:timer-outline"
+      },
       "sound_volume": {
         "default": "mdi:volume-high"
+      },
+      "start_at": {
+        "default": "mdi:timer-play-outline"
       },
       "upperoven_appliance_state": {
         "default": "mdi:information-outline"
